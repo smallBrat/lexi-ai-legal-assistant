@@ -92,13 +92,7 @@ export function useAnalysis(documentId: string, options?: { enabled?: boolean })
   return useQuery<LegalAnalysis | null>({
     queryKey: ["analysis", documentId],
     queryFn: async () => {
-      // Phase 15 efficiency: report/compare pages need only the analysis.
-      // Fetch metadata pages (page_size=1) and the full document in
-      // parallel instead of two serial round-trips.
-      const [document] = await Promise.all([
-        getDocument(documentId),
-        listDocuments({ page: 1, pageSize: 1 }),
-      ]);
+      const document = await getDocument(documentId);
       return document.analysis ?? null;
     },
     enabled: Boolean(documentId) && valid && (options?.enabled ?? true),
