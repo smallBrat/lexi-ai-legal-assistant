@@ -1,0 +1,94 @@
+# =============================================================================
+# Render Blueprint — Lexi AI monorepo
+# Deploy both services with: Render Dashboard → New → Blueprint → select repo
+# Docs: https://render.com/docs/blueprint-spec
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Backend — FastAPI Web Service
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: lexi-ai-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+
+    # Install dependencies only (no build step needed for FastAPI)
+    buildCommand: pip install -r requirements.txt
+
+    # Render injects $PORT — bind to all interfaces on it.
+    # Hardcoding a port fails the health check and the deploy.
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+    # Render polls this path; 200 = healthy, failures abort the deploy.
+    healthCheckPath: /health
+
+    autoDeploy: true          # redeploy on every push to the branch
+
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+
+      # --- Secrets: set these in the Render Dashboard (Environment tab).
+      # Do NOT put real values in this file (it is committed to git).
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+
+      # Optional — uncomment and set if you wire local HS256 JWT verification:
+      # - key: SUPABASE_JWT_SECRET
+      #   sync: false
+
+      # Optional — ChromaDB path. Default resolves to repo-root .chroma/,
+      # which is OUTSIDE rootDir and may not exist on Render. Prefer
+      # /tmp/chroma or a paid disk. Ephemeral on free tier regardless.
+      - key: CHROMA_DB_PATH
+        value: /tmp/chroma
+
+      # Optional — extra CORS origin for the deployed frontend.
+      # sync:false so you set the real URL after the frontend service exists.
+      - key: FRONTEND_URL
+        sync: false
+
+  # ---------------------------------------------------------------------------
+  # Frontend — Next.js Web Service
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: lexi-ai-frontend
+    runtime: node
+    rootDir: frontend
+    plan: free
+
+    buildCommand: npm install && npm run build
+    startCommand: npm start       # Next.js binds 0.0.0.0:$PORT automatically
+
+    autoDeploy: true
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # The browser and the /api/health proxy call the backend service URL.
+      # Set to https://lexi-ai-backend.onrender.com (adjust to your service name).
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXT_PUBLIC_BACKEND_URL
+        sync: false
+
+      # Supabase (public values — safe for the browser, still set via dashboard)
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+
+      # Render injects PORT automatically; declared here for documentation.
+      - key: PORT
+        value: "3000"

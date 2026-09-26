@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <linearGradient id="h4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E1B4B"/><stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="360" fill="#F8FAFC"/>
+  <rect width="960" height="52" fill="url(#h4)"/>
+  <text x="24" y="33" fill="#fff" font-size="20" font-weight="700">Lexi AI — Document Comparison Pipeline</text>
+
+  <g font-size="12" fill="#1E293B">
+    <rect x="30"  y="70"  width="170" height="60" rx="10" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+    <text x="115" y="95"  text-anchor="middle" font-weight="600">📄 Document A</text>
+    <text x="115" y="113" text-anchor="middle" font-size="10" fill="#6366F1">analyzed · clauses stored</text>
+
+    <rect x="30"  y="230" width="170" height="60" rx="10" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+    <text x="115" y="255" text-anchor="middle" font-weight="600">📄 Document B</text>
+    <text x="115" y="273" text-anchor="middle" font-size="10" fill="#6366F1">analyzed · clauses stored</text>
+
+    <rect x="270" y="70"  width="170" height="60" rx="10" fill="#fff" stroke="#C7D2FE" stroke-width="2"/>
+    <text x="355" y="95"  text-anchor="middle" font-weight="600">Clause list A</text>
+    <text x="355" y="113" text-anchor="middle" font-size="10">type · title · risk</text>
+
+    <rect x="270" y="230" width="170" height="60" rx="10" fill="#fff" stroke="#C7D2FE" stroke-width="2"/>
+    <text x="355" y="255" text-anchor="middle" font-weight="600">Clause list B</text>
+    <text x="355" y="273" text-anchor="middle" font-size="10">type · title · risk</text>
+
+    <rect x="510" y="145" width="180" height="70" rx="10" fill="#F0FDFA" stroke="#0D9488" stroke-width="2"/>
+    <text x="600" y="170" text-anchor="middle" font-weight="600">Match &amp; score</text>
+    <text x="600" y="188" text-anchor="middle" font-size="10">clause ↔ clause similarity</text>
+    <text x="600" y="204" text-anchor="middle" font-size="10">type-aware pairing</text>
+
+    <rect x="760" y="145" width="170" height="70" rx="10" fill="#FFFBEB" stroke="#D97706" stroke-width="2"/>
+    <text x="845" y="168" text-anchor="middle" font-weight="600">Comparison report</text>
+    <text x="845" y="186" text-anchor="middle" font-size="10">matched · changed · new</text>
+    <text x="845" y="202" text-anchor="middle" font-size="10">cached in Postgres</text>
+  </g>
+
+  <g stroke="#64748B" stroke-width="2" fill="none">
+    <line x1="200" y1="100" x2="266" y2="100" marker-end="url(#a4)"/>
+    <line x1="200" y1="260" x2="266" y2="260" marker-end="url(#a4)"/>
+    <line x1="440" y1="105" x2="506" y2="160" marker-end="url(#a4)"/>
+    <line x1="440" y1="255" x2="506" y2="200" marker-end="url(#a4)"/>
+    <line x1="690" y1="180" x2="756" y2="180" marker-end="url(#a4)"/>
+  </g>
+
+  <text x="480" y="320" text-anchor="middle" font-size="11" fill="#475569">POST /compare — both documents must be owned by the authenticated user; recent comparisons listed via GET /compare</text>
+</svg>

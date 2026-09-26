@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lexi-primary: #1e32df;
+  --lexi-primary-container: #3f51f7;
+  --lexi-surface: #fcf9f8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-surface text-on-surface font-body-md antialiased;
+  overscroll-behavior: none;
+}
+
+::selection {
+  background: #dfe0ff;
+}
+
+@layer components {
+  .lexi-card {
+    @apply rounded-xl bg-surface-container-lowest shadow-card border border-outline-variant/40;
+  }
+  .lexi-card-hover {
+    @apply transition-colors hover:bg-surface-variant/40;
+  }
+  .lexi-btn-primary {
+    @apply inline-flex items-center justify-center min-h-[44px] px-6 py-3 rounded-xl bg-primary text-on-primary font-label-md shadow-sm hover:bg-primary-container transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+  .lexi-btn-secondary {
+    @apply inline-flex items-center justify-center min-h-[44px] px-6 py-3 rounded-xl bg-surface-container-lowest text-on-surface font-label-md shadow-sm border border-outline-variant/50 hover:bg-surface-container transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+  .lexi-input {
+    @apply w-full min-h-[44px] rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-2.5 font-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary;
+  }
+  .lexi-label {
+    @apply font-label-md text-on-surface-variant;
+  }
+  .lexi-eyebrow {
+    @apply font-label-sm uppercase tracking-wider text-on-surface-variant;
+  }
+  .lexi-code {
+    @apply font-code text-[12px] text-on-surface-variant;
+  }
+  .lexi-risk-high {
+    @apply bg-error-container text-on-error-container;
+  }
+  .lexi-risk-medium {
+    @apply bg-secondary-container text-on-secondary-fixed;
+  }
+  .lexi-risk-low {
+    @apply bg-tertiary-container text-on-tertiary;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

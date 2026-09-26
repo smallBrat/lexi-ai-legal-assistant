@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="340" viewBox="0 0 960 340" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <linearGradient id="h3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E1B4B"/><stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="340" fill="#F8FAFC"/>
+  <rect width="960" height="52" fill="url(#h3)"/>
+  <text x="24" y="33" fill="#fff" font-size="20" font-weight="700">Lexi AI — Upload &amp; Ingestion Pipeline</text>
+
+  <g font-size="12" fill="#1E293B">
+    <rect x="30"  y="130" width="130" height="70" rx="10" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+    <text x="95"  y="158" text-anchor="middle" font-weight="600">📄 Upload</text>
+    <text x="95"  y="178" text-anchor="middle" font-size="10" fill="#6366F1">PDF · DOCX · image</text>
+
+    <rect x="195" y="130" width="140" height="70" rx="10" fill="#fff" stroke="#C7D2FE" stroke-width="2"/>
+    <text x="265" y="152" text-anchor="middle" font-weight="600">Validate</text>
+    <text x="265" y="170" text-anchor="middle" font-size="10">size · pages · type</text>
+    <text x="265" y="184" text-anchor="middle" font-size="10">MAX_PDF_PAGES=100</text>
+
+    <rect x="370" y="130" width="140" height="70" rx="10" fill="#fff" stroke="#C7D2FE" stroke-width="2"/>
+    <text x="440" y="152" text-anchor="middle" font-weight="600">Store</text>
+    <text x="440" y="170" text-anchor="middle" font-size="10">Supabase Storage</text>
+    <text x="440" y="184" text-anchor="middle" font-size="10">private bucket</text>
+
+    <rect x="545" y="60"  width="150" height="60" rx="10" fill="#F0FDFA" stroke="#0D9488" stroke-width="2"/>
+    <text x="620" y="82"  text-anchor="middle" font-weight="600">Extract text</text>
+    <text x="620" y="100" text-anchor="middle" font-size="10">PyMuPDF / python-docx</text>
+
+    <rect x="545" y="210" width="150" height="60" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+    <text x="620" y="232" text-anchor="middle" font-weight="600">OCR fallback</text>
+    <text x="620" y="250" text-anchor="middle" font-size="10">scanned docs · 30s timeout</text>
+
+    <rect x="760" y="130" width="160" height="70" rx="10" fill="#FFFBEB" stroke="#D97706" stroke-width="2"/>
+    <text x="840" y="152" text-anchor="middle" font-weight="600">Clean &amp; chunk</text>
+    <text x="840" y="170" text-anchor="middle" font-size="10">≤ 300k chars</text>
+    <text x="840" y="184" text-anchor="middle" font-size="10">→ document record in Postgres</text>
+  </g>
+
+  <g stroke="#64748B" stroke-width="2" fill="none">
+    <line x1="160" y1="165" x2="191" y2="165" marker-end="url(#a3)"/>
+    <line x1="335" y1="165" x2="366" y2="165" marker-end="url(#a3)"/>
+    <line x1="510" y1="165" x2="541" y2="100" marker-end="url(#a3)"/>
+    <line x1="510" y1="175" x2="541" y2="235" marker-end="url(#a3)"/>
+    <text x="526" y="132" font-size="10" fill="#475569">native</text>
+    <text x="522" y="205" font-size="10" fill="#475569">scanned</text>
+    <line x1="695" y1="100" x2="756" y2="155" marker-end="url(#a3)"/>
+    <line x1="695" y1="235" x2="756" y2="180" marker-end="url(#a3)"/>
+  </g>
+
+  <text x="480" y="280" text-anchor="middle" font-size="11" fill="#475569">Next: analysis triggers clause extraction + risk scoring (see analysis flow) and clause indexing into ChromaDB (see RAG flow)</text>
+  <text x="480" y="312" text-anchor="middle" font-size="10" fill="#94A3B8">Downloads only via short-lived signed URLs (900 s) scoped to the owning user</text>
+</svg>

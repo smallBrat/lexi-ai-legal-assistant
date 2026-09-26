@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E1B4B"/><stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="470" fill="#F8FAFC"/>
+  <rect width="960" height="52" fill="url(#hdr)"/>
+  <text x="24" y="33" fill="#fff" font-size="20" font-weight="700">Lexi AI — System Architecture</text>
+  <text x="936" y="33" fill="#A5B4FC" font-size="13" text-anchor="end">Next.js 15 · FastAPI · Gemini · ChromaDB · Supabase</text>
+
+  <!-- Frontend box -->
+  <rect x="30" y="80" width="240" height="330" rx="12" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="150" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#312E81">🖥️ Frontend</text>
+  <text x="150" y="126" text-anchor="middle" font-size="11" fill="#6366F1">Next.js 15 · React 19 · TS</text>
+  <g font-size="12" fill="#1E293B">
+    <rect x="48" y="142" width="204" height="34" rx="6" fill="#fff" stroke="#C7D2FE"/><text x="150" y="163" text-anchor="middle">App Router pages</text>
+    <rect x="48" y="186" width="204" height="34" rx="6" fill="#fff" stroke="#C7D2FE"/><text x="150" y="207" text-anchor="middle">React Query services</text>
+    <rect x="48" y="230" width="204" height="34" rx="6" fill="#fff" stroke="#C7D2FE"/><text x="150" y="251" text-anchor="middle">use-polling + registry</text>
+    <rect x="48" y="274" width="204" height="34" rx="6" fill="#fff" stroke="#C7D2FE"/><text x="150" y="295" text-anchor="middle">Supabase Auth JS</text>
+    <rect x="48" y="318" width="204" height="34" rx="6" fill="#fff" stroke="#C7D2FE"/><text x="150" y="339" text-anchor="middle">/api/health proxy (5s)</text>
+  </g>
+
+  <!-- Backend box -->
+  <rect x="360" y="80" width="240" height="330" rx="12" fill="#F0FDFA" stroke="#0D9488" stroke-width="2"/>
+  <text x="480" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#134E4A">⚙️ Backend</text>
+  <text x="480" y="126" text-anchor="middle" font-size="11" fill="#0D9488">FastAPI · Python 3.12</text>
+  <g font-size="12" fill="#1E293B">
+    <rect x="378" y="142" width="204" height="34" rx="6" fill="#fff" stroke="#99F6E4"/><text x="480" y="163" text-anchor="middle">Routers + JWT guard</text>
+    <rect x="378" y="186" width="204" height="34" rx="6" fill="#fff" stroke="#99F6E4"/><text x="480" y="207" text-anchor="middle">Analysis · Compare · Chat</text>
+    <rect x="378" y="230" width="204" height="34" rx="6" fill="#fff" stroke="#99F6E4"/><text x="480" y="251" text-anchor="middle">OCR service</text>
+    <rect x="378" y="274" width="204" height="34" rx="6" fill="#fff" stroke="#99F6E4"/><text x="480" y="295" text-anchor="middle">Repositories (user-scoped)</text>
+    <rect x="378" y="318" width="204" height="34" rx="6" fill="#fff" stroke="#99F6E4"/><text x="480" y="339" text-anchor="middle">/health</text>
+  </g>
+
+  <!-- AI + Data boxes -->
+  <rect x="690" y="80" width="240" height="150" rx="12" fill="#FAF5FF" stroke="#9333EA" stroke-width="2"/>
+  <text x="810" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#581C87">🧠 AI Layer</text>
+  <g font-size="12" fill="#1E293B">
+    <rect x="708" y="122" width="204" height="30" rx="6" fill="#fff" stroke="#E9D5FF"/><text x="810" y="142" text-anchor="middle">Google Gemini 2.x</text>
+    <rect x="708" y="160" width="204" height="30" rx="6" fill="#fff" stroke="#E9D5FF"/><text x="810" y="180" text-anchor="middle">Gemini Embeddings (1536d)</text>
+    <rect x="708" y="198" width="204" height="24" rx="6" fill="#fff" stroke="#E9D5FF"/><text x="810" y="214" text-anchor="middle">Strict Pydantic validation + retry</text>
+  </g>
+
+  <rect x="690" y="260" width="240" height="150" rx="12" fill="#FFFBEB" stroke="#D97706" stroke-width="2"/>
+  <text x="810" y="288" text-anchor="middle" font-size="15" font-weight="700" fill="#78350F">💾 Data Layer</text>
+  <g font-size="12" fill="#1E293B">
+    <rect x="708" y="302" width="204" height="30" rx="6" fill="#fff" stroke="#FDE68A"/><text x="810" y="322" text-anchor="middle">ChromaDB (vectors)</text>
+    <rect x="708" y="340" width="204" height="30" rx="6" fill="#fff" stroke="#FDE68A"/><text x="810" y="360" text-anchor="middle">Supabase Postgres</text>
+    <rect x="708" y="378" width="204" height="24" rx="6" fill="#fff" stroke="#FDE68A"/><text x="810" y="394" text-anchor="middle">Supabase Storage (private)</text>
+  </g>
+
+  <!-- Arrows -->
+  <line x1="270" y1="200" x2="360" y2="200" stroke="#64748B" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="315" y="190" text-anchor="middle" font-size="10" fill="#475569">REST + JWT</text>
+  <line x1="600" y1="205" x2="690" y2="150" stroke="#64748B" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="600" y1="300" x2="690" y2="330" stroke="#64748B" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="810" y1="230" x2="810" y2="260" stroke="#64748B" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="850" y="250" font-size="10" fill="#475569">index / retrieve</text>
+
+  <text x="480" y="450" text-anchor="middle" font-size="11" fill="#94A3B8">One polling chain per document · 401 refresh-once retry-once · strict schemas at every boundary</text>
+</svg>

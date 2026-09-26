@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="400" viewBox="0 0 960 400" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <linearGradient id="h2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E1B4B"/><stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="400" fill="#F8FAFC"/>
+  <rect width="960" height="52" fill="url(#h2)"/>
+  <text x="24" y="33" fill="#fff" font-size="20" font-weight="700">Lexi AI — Polling Lifecycle (one chain per document)</text>
+
+  <!-- states -->
+  <g font-size="13">
+    <rect x="40"  y="90"  width="150" height="52" rx="26" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+    <text x="115" y="121" text-anchor="middle" fill="#312E81" font-weight="600">startFresh()</text>
+
+    <rect x="270" y="90"  width="160" height="52" rx="10" fill="#F0FDFA" stroke="#0D9488" stroke-width="2"/>
+    <text x="350" y="112" text-anchor="middle" fill="#134E4A" font-weight="600">POLLING</text>
+    <text x="350" y="130" text-anchor="middle" fill="#0D9488" font-size="10">registry owns timer</text>
+
+    <rect x="510" y="40"  width="170" height="52" rx="10" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+    <text x="595" y="62"  text-anchor="middle" fill="#14532D" font-weight="600">COMPLETED</text>
+    <text x="595" y="80"  text-anchor="middle" fill="#16A34A" font-size="10">terminal state</text>
+
+    <rect x="510" y="140" width="170" height="52" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+    <text x="595" y="162" text-anchor="middle" fill="#7F1D1D" font-weight="600">FAILED</text>
+    <text x="595" y="180" text-anchor="middle" fill="#DC2626" font-size="10">terminal state</text>
+
+    <rect x="510" y="240" width="170" height="52" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
+    <text x="595" y="262" text-anchor="middle" fill="#78350F" font-weight="600">401 RECEIVED</text>
+    <text x="595" y="280" text-anchor="middle" fill="#D97706" font-size="10">reactive path</text>
+
+    <rect x="770" y="240" width="150" height="52" rx="10" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+    <text x="845" y="262" text-anchor="middle" fill="#7F1D1D" font-weight="600">TERMINATED</text>
+    <text x="845" y="280" text-anchor="middle" fill="#DC2626" font-size="10">auth_failed</text>
+
+    <rect x="770" y="90"  width="150" height="52" rx="10" fill="#E0E7FF" stroke="#4F46E5" stroke-width="2"/>
+    <text x="845" y="112" text-anchor="middle" fill="#312E81" font-weight="600">terminatePolling()</text>
+    <text x="845" y="130" text-anchor="middle" fill="#4F46E5" font-size="10">entry deleted · permanent</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#64748B" stroke-width="2" fill="none">
+    <line x1="190" y1="116" x2="266" y2="116" marker-end="url(#a2)"/>
+    <line x1="430" y1="106" x2="506" y2="72"  marker-end="url(#a2)"/>
+    <line x1="430" y1="128" x2="506" y2="160" marker-end="url(#a2)"/>
+    <line x1="430" y1="130" x2="506" y2="260" marker-end="url(#a2)"/>
+    <line x1="680" y1="270" x2="766" y2="270" marker-end="url(#a2)"/>
+    <line x1="595" y1="92"  x2="766" y2="118" marker-end="url(#a2)"/>
+    <line x1="595" y1="192" x2="766" y2="118" stroke-dasharray="5 4" marker-end="url(#a2)"/>
+    <!-- polling self loop -->
+    <path d="M 350 90 C 330 40, 380 40, 358 88" marker-end="url(#a2)"/>
+  </g>
+  <text x="272" y="60" font-size="10" fill="#475569">timer tick → GET status</text>
+  <text x="640" y="292" font-size="10" fill="#475569">refresh + retry once</text>
+  <text x="640" y="100" font-size="10" fill="#475569">stop</text>
+
+  <g font-size="11" fill="#475569">
+    <text x="40" y="340">Guarantees (test-enforced):</text>
+    <text x="40" y="360">• startFresh() tears down any stale chain — exactly one per document ID</text>
+    <text x="40" y="378">• terminatePolling() is permanent — no polling after a terminal state until explicit startFresh()</text>
+    <text x="40" y="396">• 401 → refresh session ONCE → retry ONCE → on failure terminate cleanly, never loop</text>
+  </g>
+</svg>

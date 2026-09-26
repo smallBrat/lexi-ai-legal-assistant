@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1B4B"/>
+      <stop offset="1" stop-color="#4338CA"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- scales of justice -->
+  <g stroke="#A5B4FC" stroke-width="3" stroke-linecap="round" fill="none">
+    <line x1="32" y1="12" x2="32" y2="48"/>
+    <line x1="14" y1="22" x2="50" y2="22"/>
+    <!-- left pan -->
+    <path d="M8 34 A8 8 0 0 0 20 34"/>
+    <line x1="14" y1="22" x2="8" y2="34"/>
+    <line x1="14" y1="22" x2="20" y2="34"/>
+    <!-- right pan -->
+    <path d="M44 34 A8 8 0 0 0 56 34"/>
+    <line x1="50" y1="22" x2="44" y2="34"/>
+    <line x1="50" y1="22" x2="56" y2="34"/>
+    <line x1="24" y1="50" x2="40" y2="50"/>
+  </g>
+  <circle cx="32" cy="12" r="3.5" fill="#2DD4BF"/>
+</svg>

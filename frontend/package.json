@@ -1,0 +1,44 @@
+{
+  "name": "lexi-ai-legal-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint app components hooks lib services types scripts",
+    "typecheck": "tsc --noEmit",
+    "test:contract": "node --experimental-strip-types --import ./scripts/register-alias.mjs --test scripts/verify-analyze-request.test.ts",
+    "test:chat": "node --experimental-strip-types --import ./scripts/register-alias.mjs --test scripts/verify-chat-request.test.ts",
+    "test:stability": "node --experimental-strip-types --import ./scripts/register-alias.mjs --test scripts/verify-frontend-stability.test.ts",
+    "test": "npm run test:contract && npm run test:chat && npm run test:stability"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@supabase/supabase-js": "^2.116.0",
+    "@tanstack/react-query": "^5.59.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.9",
+    "lucide-react": "^0.453.0",
+    "next": "^15.5.25",
+    "next-themes": "^0.4.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.53.1",
+    "tailwind-merge": "^2.5.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.14.0",
+    "eslint-config-next": "^15.1.6",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3"
+  }
+}
