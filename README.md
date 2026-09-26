@@ -606,9 +606,9 @@ Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 <div align="center">
 
 <!-- Replace with your handle & links -->
-**Your Name** — *Full-Stack & AI Engineer*
+**Shubham Nayak** — *Full-Stack & AI Engineer*
 
-[![GitHub](https://img.shields.io/badge/GitHub-@your--username-181717?style=for-the-badge&logo=github)](https://github.com/your-username)
+[![GitHub](https://img.shields.io/badge/GitHub-@smallBrat-181717?style=for-the-badge&logo=github)](https://github.com/smallBrat)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-your--profile-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/your-profile)
 [![Portfolio](https://img.shields.io/badge/Portfolio-your--site-FF7139?style=for-the-badge&logo=firefox)](https://your-portfolio.dev)
 
