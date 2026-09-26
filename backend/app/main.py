@@ -10,6 +10,7 @@ from app.api.health import router as health_router
 from app.api.router import register_routers
 from app.core.config import get_settings
 from app.core.logging import debug, error, info
+from app.core.middleware import add_security_headers
 
 
 def create_app() -> FastAPI:
@@ -39,9 +40,19 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=[
+            "Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "X-Requested-With",
+        ],
+        max_age=600,
     )
+
+    # Phase 15: conservative security headers on every response.
+    add_security_headers(app)
 
     # Register API routers
     register_routers(app)
@@ -91,6 +102,8 @@ def create_app() -> FastAPI:
         if auth_header.startswith("Bearer "):
             auth_header = "Bearer <redacted>"
 
+        # Phase 15: never log raw request bodies — uploads and chat payloads
+        # contain user document text and PII. Log only metadata.
         error(
             "[422 VALIDATION]",
             method=request.method,
@@ -99,7 +112,7 @@ def create_app() -> FastAPI:
             query=str(request.url.query) or "(none)",
             content_type=request.headers.get("content-type", "(none)"),
             authorization=auth_header,
-            body=body.decode("utf-8") if body else "(empty)",
+            body_length=len(body) if body else 0,
             errors=exc.errors(),
         )
         return JSONResponse(

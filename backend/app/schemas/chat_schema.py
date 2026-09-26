@@ -3,7 +3,14 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+def _no_control_characters(value: str) -> str:
+    """Reject C0/DEL control characters (excluding tab/newline) in prompts."""
+    if any(ord(ch) < 32 and ch not in "\t\n\r" for ch in value) or "\x7f" in value:
+        raise ValueError("Question must not contain control characters.")
+    return value
 
 
 class ChatRequest(BaseModel):
@@ -14,6 +21,8 @@ class ChatRequest(BaseModel):
     document_id: UUID
     question: str = Field(min_length=1, max_length=4000)
 
+    _validate_question = field_validator("question")(_no_control_characters)
+
 
 class ChatQuestionRequest(BaseModel):
     """Question body for the document-scoped compatibility endpoint."""
@@ -21,6 +30,8 @@ class ChatQuestionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     question: str = Field(min_length=1, max_length=4000)
+
+    _validate_question = field_validator("question")(_no_control_characters)
 
 
 class Citation(BaseModel):

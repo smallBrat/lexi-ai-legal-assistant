@@ -78,8 +78,18 @@ def _validate_content(content: bytes, extension: str, content_type: str | None) 
         if extension == "pdf":
             import fitz
 
+            # Phase 15: reject PDFs whose page count alone exceeds the
+            # processing limit before any parsing/OCR work happens.
             document = fitz.open(stream=content, filetype="pdf")
-            document.close()
+            try:
+                settings = get_settings()
+                if document.page_count > settings.MAX_PDF_PAGES:
+                    raise HTTPException(
+                        status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                        detail="The PDF exceeds processing limits.",
+                    )
+            finally:
+                document.close()
             if not content.startswith(b"%PDF-"):
                 raise ValueError("Invalid PDF signature")
         elif extension in {"png", "jpg", "jpeg"}:
@@ -95,6 +105,15 @@ def _validate_content(content: bytes, extension: str, content_type: str | None) 
                 names = set(archive.namelist())
                 if "[Content_Types].xml" not in names or "word/document.xml" not in names:
                     raise ValueError("Invalid DOCX structure")
+                # Phase 15: docx bomb guard. A 20MB DOCX that inflates to
+                # hundreds of MB (or tens of thousands of entries) is a
+                # decompression bomb against the parser.
+                max_entries = 2_000
+                if len(names) > max_entries:
+                    raise ValueError("DOCX archive contains too many entries")
+                total_uncompressed = sum(info.file_size for info in archive.infolist())
+                if total_uncompressed > 200 * 1024 * 1024:
+                    raise ValueError("DOCX archive is too large when decompressed")
     except (UnidentifiedImageError, ValueError, zipfile.BadZipFile, RuntimeError) as exc:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -108,12 +127,14 @@ def _validate_content(content: bytes, extension: str, content_type: str | None) 
 
 
 def _validate_title(title: str | None, fallback: str) -> str:
-    """Trim and validate a user-supplied document title."""
-    value = title.strip() if title else fallback
-    if len(value) > 200 or any(ord(character) < 32 or ord(character) == 127 for character in value):
+    """Trim, sanitize, and validate a user-supplied document title."""
+    from app.utils.sanitize import sanitize_text
+
+    value = sanitize_text(title, 200) or (fallback[:200] if fallback else "")
+    if len(value) > 200:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Title must be 200 characters or fewer and contain no control characters.",
+            detail="Title must be 200 characters or fewer.",
         )
     return value
 

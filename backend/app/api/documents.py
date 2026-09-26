@@ -53,11 +53,13 @@ async def list_documents(
         raise HTTPException(status_code=422, detail="Invalid risk_level filter.")
     service = get_document_service()
     try:
+        from app.utils.sanitize import sanitize_text
+
         return await service.list_documents(
             current_user.id,
             page=page,
             page_size=page_size,
-            search=search.strip() if search else None,
+            search=sanitize_text(search, 100) or None,
             document_type=document_type.value if document_type else None,
             risk_level=risk_level,
             status=document_status.value if document_status else None,

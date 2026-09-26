@@ -103,6 +103,7 @@ class ChatRepository:
                 .eq("document_id", str(document_id))
                 .eq("user_id", user_id)
                 .order("timestamp", desc=False)
+                .limit(200)
                 .execute()
             )
             rows = cast("list[dict[str, Any]]", response.data or [])

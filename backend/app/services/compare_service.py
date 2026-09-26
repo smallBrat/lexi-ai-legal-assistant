@@ -158,11 +158,20 @@ class CompareService:
 
     # -- document loading -------------------------------------------------
 
-    def _fetch_row(self, document_id: UUID) -> dict[str, Any] | None:
-        """Fetch one document row without applying ownership."""
+    def _fetch_row(self, document_id: UUID, _metadata_only: bool = False) -> dict[str, Any] | None:
+        """Fetch one document row without applying ownership.
+
+        ``_metadata_only=True`` skips the heavy ``extracted_text`` column —
+        used by the cached-comparison path which only renders titles/types.
+        """
+        columns = (
+            "id,user_id,title,document_type"
+            if _metadata_only
+            else "id,user_id,title,document_type,extracted_text,analysis"
+        )
         response = (
             self._client.table("documents")
-            .select("id,user_id,title,document_type,extracted_text,analysis")
+            .select(columns)
             .eq("id", str(document_id))
             .limit(1)
             .execute()

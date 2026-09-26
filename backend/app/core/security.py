@@ -8,6 +8,7 @@ from typing import Annotated, Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from app.core.config import get_supabase_url
 from app.core.logging import error
 from app.core.supabase import get_supabase
 
@@ -22,8 +23,42 @@ class AuthenticatedUser:
 
 
 def verify_token(token: str) -> dict[str, Any] | None:
-    """Return a verified Supabase JWT payload when available."""
+    """Return a verified Supabase JWT payload when available.
+
+    Phase 15/15.1 hardening, in order of cheapness:
+      1. Structural check — a non-3-segment token is malformed, reject
+         without a network round-trip to Supabase Auth.
+      2. Claim pre-checks — ``role=service_role`` credentials and tokens
+         whose ``iss``/``aud`` claims do not match the configured Supabase
+         project are rejected before verification.
+      3. Cryptographic check — Supabase Auth API ``get_user(token)``
+         verifies the signature and expiry server-side.
+    A service-role key presented as a bearer token must never authenticate
+    an API request, even from a misconfigured client.
+    """
     try:
+        payload = get_token_payload(token)
+        if payload is None:
+            # Malformed bearer (not 3 dot-separated segments, bad base64,
+            # or non-JSON payload): reject locally, no Supabase call.
+            error("JWT verification rejected malformed token")
+            return None
+        if payload.get("role") == "service_role":
+            error("JWT verification rejected service-role credential")
+            return None
+        # Issuer/audience binding (Phase 15.1): Supabase issues tokens with
+        # iss="https://<project-ref>.supabase.co/auth/v1" and
+        # aud="authenticated" for user sessions. A token minted for a
+        # different project (or an API-key-style audience) must not pass.
+        expected_iss = get_supabase_url().rstrip("/") + "/auth/v1"
+        token_iss = str(payload.get("iss") or "").rstrip("/")
+        if token_iss and token_iss != expected_iss:
+            error("JWT verification rejected token from wrong issuer")
+            return None
+        token_aud = payload.get("aud")
+        if token_aud is not None and token_aud != "authenticated":
+            error("JWT verification rejected token with unexpected audience")
+            return None
         response = get_supabase().auth.get_user(token)
         user = getattr(response, "user", None)
         user_id = getattr(user, "id", None)

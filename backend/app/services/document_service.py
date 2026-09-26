@@ -39,10 +39,35 @@ class DocumentForbiddenError(DocumentServiceError):
 class DocumentService:
     """Coordinate ownership, repository, and storage operations."""
 
+    # Signed-URL cache (Phase 15.1): URLs are valid for 900s but each list
+    # request re-minted one per row — a Supabase Storage round-trip per
+    # document on every dashboard keystroke/filter change. Caching by
+    # storage path for a short TTL keeps URLs well within their validity
+    # window while eliminating redundant minting. Keys are the (immutable,
+    # server-generated) storage paths; user ownership is already enforced
+    # by the repository query before any cached URL is served.
+    _SIGNED_URL_TTL_SECONDS = 300.0
+    _SIGNED_URL_CACHE_MAX = 512
+
     def __init__(self, repository: DocumentRepository, storage: StorageService) -> None:
         """Initialize the document service."""
         self._repository = repository
         self._storage = storage
+        self._signed_url_cache: dict[str, tuple[float, str]] = {}
+
+    def _cached_signed_url(self, storage_path: str) -> str:
+        """Return a cached signed URL for a storage path, minting on miss."""
+        now = perf_counter()
+        cached = self._signed_url_cache.get(storage_path)
+        if cached is not None and now - cached[0] < self._SIGNED_URL_TTL_SECONDS:
+            return cached[1]
+        url = self._storage.get_signed_url(storage_path, 900)
+        if len(self._signed_url_cache) >= self._SIGNED_URL_CACHE_MAX:
+            # Evict the oldest entry; cache is bounded and per-process.
+            oldest = min(self._signed_url_cache, key=lambda k: self._signed_url_cache[k][0])
+            self._signed_url_cache.pop(oldest, None)
+        self._signed_url_cache[storage_path] = (now, url)
+        return url
 
     @staticmethod
     def _risk(analysis: Any) -> tuple[int, str | None]:
@@ -91,16 +116,21 @@ class DocumentService:
         """List documents with validated filters and signed preview URLs."""
         started = perf_counter()
         rows, total = await asyncio.to_thread(self._repository.list_documents, user_id, **filters)
-        items: list[DocumentListItem] = []
-        for row in rows:
+
+        async def _signed_url(row: dict[str, Any]) -> str | None:
             try:
-                signed_url = await asyncio.to_thread(
-                    self._storage.get_signed_url, str(row["storage_path"]), 900
-                )
+                return await asyncio.to_thread(self._cached_signed_url, str(row["storage_path"]))
             except StorageServiceError as exc:
                 error("Document preview URL failed", user_id=user_id, error=str(exc))
-                signed_url = None
-            items.append(self._list_item(row, signed_url))
+                return None
+
+        # Phase 15 efficiency: create all signed URLs concurrently instead
+        # of serially — one storage round-trip of latency per page, not N.
+        signed_urls = await asyncio.gather(*(_signed_url(row) for row in rows))
+        items = [
+            self._list_item(row, signed_url)
+            for row, signed_url in zip(rows, signed_urls)
+        ]
         page = filters["page"]
         page_size = filters["page_size"]
         total_pages = ceil(total / page_size) if total else 0

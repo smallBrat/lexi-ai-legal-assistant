@@ -94,8 +94,8 @@ async def compare_documents(
     if cached:
         try:
             row_a, row_b = await asyncio.gather(
-                asyncio.to_thread(service._fetch_row, payload.document_a_id),
-                asyncio.to_thread(service._fetch_row, payload.document_b_id),
+                asyncio.to_thread(service._fetch_row, payload.document_a_id, _metadata_only=True),
+                asyncio.to_thread(service._fetch_row, payload.document_b_id, _metadata_only=True),
             )
             docs = {"a": row_a or {}, "b": row_b or {}}
         except CompareServiceError as exc:
