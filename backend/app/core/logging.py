@@ -1,10 +1,20 @@
 """Structured logging for the Lexi AI Legal Assistant backend."""
 
 import logging
+import os
 import sys
+from pathlib import Path
 from typing import Any
 
 from app.core.config import get_settings
+
+LOG_DIR = Path("logs")
+LOG_FILE = LOG_DIR / "lexi-ai-legal-assistant.log"
+
+
+def _is_production() -> bool:
+    """Detect production environment (Render sets RENDER, or ENVIRONMENT=production)."""
+    return bool(os.getenv("RENDER")) or os.getenv("ENVIRONMENT") == "production"
 
 
 def setup_logger(name: str = "lexi-ai-legal-assistant") -> logging.Logger:
@@ -22,10 +32,12 @@ def setup_logger(name: str = "lexi-ai-legal-assistant") -> logging.Logger:
     if logger.handlers:
         return logger
     
+    environment = "production" if _is_production() else "development"
+    is_production = environment == "production"
     log_level = logging.INFO if not get_settings().is_development() else logging.DEBUG
     logger.setLevel(log_level)
     
-    # Console handler with structured format
+    # Console handler with structured format (Render captures stdout)
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(log_level)
     
@@ -37,12 +49,21 @@ def setup_logger(name: str = "lexi-ai-legal-assistant") -> logging.Logger:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     
-    # Also log to file in production
-    if get_settings().is_production():
-        file_handler = logging.FileHandler("logs/lexi-ai-legal-assistant.log")
+    # File logging only in development; never on Render
+    file_logging = False
+    if not is_production:
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
+        file_handler = logging.FileHandler(LOG_FILE, encoding="utf-8")
         file_handler.setLevel(log_level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+        file_logging = True
+    
+    print(
+        "[INFO] Logger initialized\n"
+        f"environment={environment}\n"
+        f"file_logging={file_logging}"
+    )
     
     return logger
 
